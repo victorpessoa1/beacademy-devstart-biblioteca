@@ -7,10 +7,14 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function __construct(User $user)
+    {
+        $this->model = $user;
+    }
+
     public function index()
     {
         $users = User::all();
-
 
         return view('users.index', compact('users'));
     }
@@ -23,6 +27,21 @@ class UserController extends Controller
 
         $title = 'Usuário ' . $user->name;
         return view('users.show', compact('user', 'title'));
+    }
+
+    public function create()
+    {
+        return view('users.create');
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->all();
+        $data['password'] = bcrypt($request->password);
+
+        $this->model->create($data);
+
+        return redirect()->route('users.index');
     }
 
 
