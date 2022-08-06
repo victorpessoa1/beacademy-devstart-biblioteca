@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Hashing\BcryptHasher;
 use Illuminate\Http\Request;
+
+use function Symfony\Component\String\b;
 
 class UserController extends Controller
 {
@@ -44,5 +47,25 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 
+    public function edit($id)
+    {
+        if(!$user = $this->model->find($id))
+            return redirect()->route('users.index');
 
+        return view('users.edit', compact('user'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        if(!$user = $this->model->find($id))
+            return redirect()->route('users.index');
+
+        $data = $request->only('name', 'email');
+        if($request->password)
+            $data['password'] = Bcrypt($request->password);
+
+        $user->update($data);
+
+        return redirect()->route('users.index');
+    }
 }
