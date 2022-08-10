@@ -1,7 +1,15 @@
 @extends('templates.users')
 @section('title', 'Novo Usuário')
 @section('body')
-<h1> Novo Usuário </h1>
+    <h1> Novo Usuário </h1>
+
+    @if($errors->any())
+        <div class="alert alert-danger" role="alert">
+            @foreach ($errors->all() as $error)
+                {{ $error }} <br>
+            @endforeach
+        </div>
+    @endif
 
     <form action="{{ route('users.store') }}" method='POST'>
         @csrf
